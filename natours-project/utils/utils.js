@@ -37,7 +37,7 @@ exports.handleError = (res, error) => {
     console.log(error.message); // Log other types of errors
     return res.status(500).json({
       status: 'error',
-      message: 'Something went wrong on the server!',
+      message: error.message,
     });
   }
 };
