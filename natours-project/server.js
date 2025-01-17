@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const app = require('./app');
 const dotenv = require('dotenv');
-
 // Load environment variables
 dotenv.config({ path: './config.env' });
+const app = require('./app');
 
 // Replace placeholder in the database URL
 const DB = process.env.DATABASE_URL.replace(
