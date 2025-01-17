@@ -5,6 +5,14 @@ const {
   handleError,
 } = require('../utils/utils');
 
+// Middleware for alias the tours
+exports.aliasTopTours = async (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,summary,difficulty';
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
     // 1. Filtering
