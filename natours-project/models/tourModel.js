@@ -62,6 +62,16 @@ const toursSchema = new mongoose.Schema({
   startDates: [Date],
 });
 
+// We do not use a callback (arrow function) here because we need the `this` keyword to refer to the specific document (tour).
+// This property will be available only when we get the data , not in the collection
+toursSchema.virtual('durationWeeks').get(function () {
+  // `this` refers to the current document instance (tour).
+  return this.duration / 7; // Calculate the duration in weeks by dividing the duration (in days) by 7.
+});
+// Ensure that virtuals are included in the output when converting to JSON or object
+toursSchema.set('toJSON', { virtuals: true });
+toursSchema.set('toObject', { virtuals: true });
+
 const Tour = mongoose.model('Tour', toursSchema);
 
 module.exports = Tour;
