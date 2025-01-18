@@ -62,6 +62,10 @@ const toursSchema = new mongoose.Schema({
   },
   startDates: [Date],
   slug: String,
+  secretTour: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // We do not use a callback (arrow function) here because we need the `this` keyword to refer to the specific document (tour).
@@ -85,6 +89,23 @@ toursSchema.set('toObject', { virtuals: true });
 //   console.log(' Document saved !');
 //   next();
 // });
+
+// Query Middleware
+toursSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+toursSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds !`);
+  next();
+});
+
+// Aggregation Middleware
+toursSchema.pre('aggreagate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
 
 const Tour = mongoose.model('Tour', toursSchema);
 
