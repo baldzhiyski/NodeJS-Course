@@ -4,7 +4,7 @@ const {
   validateObjectId,
   handleResponse,
   handleError,
-} = require('../utils/utils');
+} = require('../utils/handlers.js');
 
 // Middleware for alias the tours
 exports.aliasTopTours = async (req, res, next) => {
