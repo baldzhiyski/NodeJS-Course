@@ -33,6 +33,14 @@ const toursSchema = new mongoose.Schema({
   },
   priceDiscount: {
     type: Number,
+    // Custom validation
+    validate: {
+      validator: function (val) {
+        // this only points to current doc on NEW document creation
+        return val < this.price;
+      },
+      message: 'Discount price ({VALUE}) should be below the regular price',
+    },
   },
   summery: {
     type: String,
