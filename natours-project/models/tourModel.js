@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const toursSchema = new mongoose.Schema({
   name: {
@@ -60,6 +61,7 @@ const toursSchema = new mongoose.Schema({
     select: false,
   },
   startDates: [Date],
+  slug: String,
 });
 
 // We do not use a callback (arrow function) here because we need the `this` keyword to refer to the specific document (tour).
@@ -71,6 +73,18 @@ toursSchema.virtual('durationWeeks').get(function () {
 // Ensure that virtuals are included in the output when converting to JSON or object
 toursSchema.set('toJSON', { virtuals: true });
 toursSchema.set('toObject', { virtuals: true });
+
+// Document Middleware : run before the .save() and .create() command. Like in express we also need in mongoose to say next at the end !
+// toursSchema.pre('save', function (next) {
+//   this.slug = slugify(this.name, { lower: true });
+
+//   next();
+// });
+
+// toursSchema.post('save', function (doc, next) {
+//   console.log(' Document saved !');
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', toursSchema);
 
