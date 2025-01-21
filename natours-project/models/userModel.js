@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcrypt');
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, 'First Name is required'],
@@ -36,6 +37,7 @@ const UserSchema = new mongoose.Schema({
   confirmPass: {
     type: String,
     required: [true, 'Confirm Password is required'],
+    // This works only on save  and create ! When updating the pass we need to be mindful of that !
     validate: {
       validator: function (value) {
         return value === this.password;
@@ -46,5 +48,16 @@ const UserSchema = new mongoose.Schema({
   imageUrl: String,
 });
 
-const User = mongoose.model('User', UserSchema);
+//Pre-Save middleware
+userSchema.pre('save', async function (next) {
+  // Run this function if the field password of the user was actually modified
+  if (!this.isModified('password')) return next();
+
+  // Delete passwordConf field
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPass = undefined;
+  next();
+});
+
+const User = mongoose.model('User', userSchema);
 module.exports = User;
