@@ -32,7 +32,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   handleResponse(res, { tour });
 });
 
-(exports.updateTour = catchAsync(async (req, res, next) => {
+exports.updateTour = catchAsync(async (req, res, next) => {
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -41,11 +41,12 @@ exports.getTour = catchAsync(async (req, res, next) => {
     return next(new AppError(`No tour found with id : ${req.params.id}`, 404));
   }
   handleResponse(res, { tour: updatedTour });
-})),
-  (exports.postTour = catchAsync(async (req, res, next) => {
-    const newTour = await Tour.create(req.body);
-    handleResponse(res, { tour: newTour }, 'success', 201);
-  }));
+});
+
+exports.postTour = catchAsync(async (req, res, next) => {
+  const newTour = await Tour.create(req.body);
+  handleResponse(res, { tour: newTour }, 'success', 201);
+});
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
