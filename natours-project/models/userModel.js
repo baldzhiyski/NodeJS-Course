@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
     ],
+    select: false,
   },
   confirmPass: {
     type: String,
@@ -58,6 +59,20 @@ userSchema.pre('save', async function (next) {
   this.confirmPass = undefined;
   next();
 });
+
+// Adding a method to the userSchema to verify passwords
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  // The function takes two parameters:
+  // candidatePassword: The plain text password entered by the user during login.
+  // userPassword: The hashed password stored in the database.
+
+  // Using bcrypt to compare the candidate password with the stored hashed password.
+  // bcrypt.compare returns true if the passwords match, otherwise false.
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
