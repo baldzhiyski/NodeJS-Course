@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   imageUrl: String,
+  passwordChangedAt: Date,
 });
 
 //Pre-Save middleware
@@ -72,6 +73,21 @@ userSchema.methods.correctPassword = async function (
   // Using bcrypt to compare the candidate password with the stored hashed password.
   // bcrypt.compare returns true if the passwords match, otherwise false.
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.changedPasswordAfter) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    // It was changed after getting the token
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means not changed password
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
