@@ -65,6 +65,21 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// Middleware to restrict access based on user roles
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // Check if user is authenticated and if their role is in the allowed roles list
+    // `req.user` is populated by authentication middleware like the `protect` middleware
+    if (!req.user || !roles.includes(req.user.role)) {
+      // If the user is not authenticated or their role is not allowed, deny access with 403 error
+      return next(new AppError('Permission denied!', 403));
+    }
+
+    // If the user has the correct role, grant access by passing control to the next middleware/route handler
+    next();
+  };
+};
+
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     firstName: req.body.firstName,

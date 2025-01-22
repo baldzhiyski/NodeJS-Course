@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema({
       message: 'Confirm Password must match the Password',
     },
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'guide', 'lead-guide'],
+    default: 'user',
+  },
   imageUrl: String,
   passwordChangedAt: Date,
 });

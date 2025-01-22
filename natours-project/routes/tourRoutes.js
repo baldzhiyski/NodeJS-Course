@@ -12,7 +12,7 @@ const {
   getMontlyPlan,
 } = tourController;
 
-const { protect } = authController;
+const { protect, restrictTo } = authController;
 
 const { checkID, checkTourBody } = require('../controllers/tourController');
 
@@ -32,6 +32,6 @@ tourRouter
   .route('/:id')
   .get(protect, getTour)
   .patch(protect, updateTour)
-  .delete(protect, deleteTour);
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 module.exports = tourRouter;
