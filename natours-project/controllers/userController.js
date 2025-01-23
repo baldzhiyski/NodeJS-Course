@@ -4,6 +4,28 @@ const APIFeatures = require('../utils/apiFeatures.js');
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync');
 
+/**
+ * Filters an object to include only specified allowed fields.
+ *
+ * @param {Object} obj - The object to be filtered.
+ * @param {...string} allowedFields - The fields to be allowed in the new object.
+ * @returns {Object} - A new object containing only the allowed fields from the original object.
+ */
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {}; // Initialize an empty object to hold filtered key-value pairs.
+
+  // Iterate through each key in the original object.
+  Object.keys(obj).forEach((el) => {
+    // Check if the key is in the list of allowed fields.
+    if (allowedFields.includes(el)) {
+      // Add the key-value pair to the new object if it is allowed.
+      newObj[el] = obj[el];
+    }
+  });
+
+  return newObj;
+};
+
 exports.getAllUsers = catchAsync(async (req, res) => {
   const features = new APIFeatures(User.find(), req.query)
     .filter()
@@ -13,6 +35,31 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await features.query;
 
   handleResponse(res, { users: users }, 'success');
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  // 1) Create error if user POSTs password data
+  if (req.body.newPassword || req.body.newPasswordConfirm) {
+    return next(
+      new AppError(
+        'This route is not for password udpates ! Please use /updatePassword',
+        400
+      )
+    );
+  }
+  // 2) Update user document
+  const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email');
+  const updatedUser = await User.findById(req.user.id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      updatedUser: updatedUser,
+    },
+  });
 });
 
 exports.getUser = (req, res) => {
