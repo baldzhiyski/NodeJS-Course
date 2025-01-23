@@ -5,7 +5,15 @@ const authController = require('../controllers/authController');
 const { getAllUsers, createUser, getUser, updateUser, deleteUser } =
   userController;
 
-const { signUp, login, forgotPassword, resetPassword } = authController;
+const {
+  signUp,
+  login,
+  forgotPassword,
+  resetPassword,
+  updatePassword,
+  protect,
+  restrictTo,
+} = authController;
 const userRouter = express.Router();
 // Routes
 // Auth
@@ -14,6 +22,7 @@ userRouter.post('/login', login);
 
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
+userRouter.patch('/updatePassword', protect, updatePassword);
 
 // Users
 userRouter.route('/').get(getAllUsers).post(createUser);
