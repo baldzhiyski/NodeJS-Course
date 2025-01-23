@@ -6,6 +6,7 @@ const AppError = require('../utils/appError');
 const jwt = require('jsonwebtoken');
 const { decode } = require('punycode');
 const sendEmail = require('../utils/email');
+const crypto = require('crypto');
 
 const signToken = (id, email) =>
   jwt.sign(
@@ -173,4 +174,37 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.resetPassword = (req, res, next) => {};
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  // 1) Get user based on token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  // Find the user based on the hashed token and check if it is expired or not
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  // 2) If token has not expired , and there is user , set the new password,
+  if (!user) {
+    return next(new AppError('Token is invalid or has expired', 400));
+  }
+
+  // 3) Update changedPasswordAt property for the user
+  user.password = req.body.password;
+  user.confirmPass = req.body.confirmPass;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  // The validators in the schema will test if the passwords are equal or not . Here the middlewares will be activated also for hashing the new pass
+  await user.save();
+
+  // 4) Log the user in , send JWT
+  const token = signToken(user._id);
+
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
