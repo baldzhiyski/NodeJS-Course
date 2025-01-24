@@ -7,6 +7,13 @@ const jwt = require('jsonwebtoken');
 const { decode } = require('punycode');
 const sendEmail = require('../utils/email');
 const crypto = require('crypto');
+const cookieOptions = {
+  expiresIn: new Date(
+    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000
+  ),
+  secure: process.env.NODE_ENV === 'production' ? true : false,
+  httpOnly: true,
+};
 
 const signToken = (id, email) =>
   jwt.sign(
@@ -94,6 +101,8 @@ exports.signUp = catchAsync(async (req, res, next) => {
 
   const token = signToken(newUser._id, newUser.email);
 
+  res.cookie('jwt', token, cookieOptions);
+
   return res.status(201).json({
     status: 'success',
     message: 'Successfully registered user !',
@@ -120,6 +129,9 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 2) Send a token back to the client
   const token = signToken(user._id, user.email);
+
+  res.cookie('jwt', token, cookieOptions);
+
   res.status(200).json({
     status: 'success',
     token,
@@ -203,6 +215,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 4) Log the user in , send JWT
   const token = signToken(user._id);
 
+  res.cookie('jwt', token, cookieOptions);
+
   res.status(200).json({
     status: 'success',
     token,
@@ -235,6 +249,8 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   // 4) Log user in send JWT
   const token = signToken(currentUser._id);
+
+  res.cookie('jwt', token, cookieOptions);
 
   res.status(200).json({
     status: 'success',
