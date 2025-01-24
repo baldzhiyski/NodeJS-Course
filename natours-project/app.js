@@ -5,21 +5,30 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const app = express();
 
 const baseUrl = '/api/v1';
 
 //  Global Middlewares
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use(express.json());
+// Body parser, reading data from body into req.body
+app.use(
+  express.json({
+    limit: '10kb',
+  })
+);
 
-// static file middleware
+// Static file middleware
 app.use(express.static(`${__dirname}/public`));
 
+// Limit requests
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
@@ -27,6 +36,9 @@ const limiter = rateLimit({
 });
 
 app.use('/api', limiter);
+
+// Security HTTP Headers
+app.use(helmet());
 
 // Mounting the routes
 app.use(`${baseUrl}/tours`, tourRouter);
