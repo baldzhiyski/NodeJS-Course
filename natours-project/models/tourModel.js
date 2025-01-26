@@ -140,6 +140,14 @@ toursSchema.set('toObject', { virtuals: true });
 // });
 
 // Query Middleware
+toursSchema.pre('findOne', function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 toursSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
