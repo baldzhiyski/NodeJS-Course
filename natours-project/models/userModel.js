@@ -64,12 +64,18 @@ const userSchema = new mongoose.Schema({
 });
 
 //Pre-Save middleware
+
 userSchema.pre('save', async function (next) {
   // Run this function if the field password of the user was actually modified
   if (!this.isModified('password')) return next();
 
   // Delete passwordConf field
   this.password = await bcrypt.hash(this.password, 12);
+
+  /*
+This effectively removes the confirmPass field from the document before it is saved to the database.\
+This happens after Mongoose validates the schema but before the actual document is saved to the database.
+*/
   this.confirmPass = undefined;
   next();
 });
