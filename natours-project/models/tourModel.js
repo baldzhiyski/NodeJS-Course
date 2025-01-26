@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const User = require('./userModel');
+// const User = require('./userModel');
 
 const toursSchema = new mongoose.Schema({
   name: {
@@ -99,7 +99,12 @@ const toursSchema = new mongoose.Schema({
       day: Number,
     },
   ],
-  guides: Array,
+  guides: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 // We do not use a callback (arrow function) here because we need the `this` keyword to refer to the specific document (tour).
@@ -124,15 +129,15 @@ toursSchema.set('toObject', { virtuals: true });
 //   next();
 // });
 
-// Only for creating new documents
-toursSchema.pre('save', async function (next) {
-  const guidesPromises = this.guides.map(async (id) => {
-    await User.findById(id);
-  });
+// Only for creating new documents ( for embedding )
+// toursSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => {
+//     await User.findById(id);
+//   });
 
-  this.guides = await Promise.all(guidesPromises);
-  next();
-});
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // Query Middleware
 toursSchema.pre(/^find/, function (next) {
