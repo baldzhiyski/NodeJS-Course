@@ -1,17 +1,16 @@
 const express = require('express');
 const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
-const { getAllReviews, getCurrentReview, createReview } = reviewController;
+const { getAllReviewsSpecificTour, createReview } = reviewController;
 
 const { protect, restrictTo } = authController;
 
-const reviewRouter = express.Router();
+const reviewRouter = express.Router({ mergeParams: true });
 
+// Nested routes for the reviews
 reviewRouter
   .route('/')
-  .get(protect, getAllReviews)
-  .post(protect, restrictTo('user'), createReview);
-
-reviewRouter.route('/:id').get(protect, getCurrentReview);
+  .post(protect, restrictTo('user'), createReview)
+  .get(protect, getAllReviewsSpecificTour);
 
 module.exports = reviewRouter;
