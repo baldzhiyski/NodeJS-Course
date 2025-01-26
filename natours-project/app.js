@@ -4,6 +4,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -66,6 +67,7 @@ app.use(helmet());
 // Mounting the routes
 app.use(`${baseUrl}/tours`, tourRouter);
 app.use(`${baseUrl}/users`, userRouter);
+app.use(`${baseUrl}/reviews`, reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on the server !`, 404));
