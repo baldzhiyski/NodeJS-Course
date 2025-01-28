@@ -32,8 +32,15 @@ userRouter.patch('/updatePassword', protect, updatePassword);
 userRouter.delete('/deleteMe', protect, deleteMe);
 
 // Users
-userRouter.patch('/updateMe', protect, updateMe);
-userRouter.route('/').get(getAllUsers).post(createUser);
-userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+userRouter.patch('/updateMe', protect, restrictTo('admin'), updateMe);
+userRouter
+  .route('/')
+  .get(protect, restrictTo('admin'), getAllUsers)
+  .post(protect, restrictTo('admin'), createUser);
+userRouter
+  .route('/:id')
+  .get(protect, restrictTo('admin'), getUser)
+  .patch(protect, restrictTo('admin'), updateUser)
+  .delete(protect, restrictTo('admin'), deleteUser);
 
 module.exports = userRouter;
