@@ -26,24 +26,23 @@ const {
 const userRouter = express.Router();
 // Routes
 // Auth
+// Free for the public
 userRouter.post('/signup', signUp);
 userRouter.post('/login', login);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
-userRouter.patch('/updatePassword', protect, updatePassword);
-userRouter.delete('/deleteMe', protect, deleteMe);
-userRouter.get('/me', protect, getMe, getProfile);
+
+// Protect all routes from here on
+userRouter.use(protect);
+userRouter.patch('/updatePassword', updatePassword);
+userRouter.delete('/deleteMe', deleteMe);
+userRouter.patch('/updateMe', updateMe);
+userRouter.get('/me', getMe, getProfile);
 
 // Users
-userRouter.patch('/updateMe', protect, restrictTo('admin'), updateMe);
-userRouter
-  .route('/')
-  .get(protect, restrictTo('admin'), getAllUsers)
-  .post(protect, restrictTo('admin'), createUser);
-userRouter
-  .route('/:id')
-  .get(protect, restrictTo('admin'), getUser)
-  .patch(protect, restrictTo('admin'), updateUser)
-  .delete(protect, restrictTo('admin'), deleteUser);
+
+userRouter.use(restrictTo('admin'));
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = userRouter;

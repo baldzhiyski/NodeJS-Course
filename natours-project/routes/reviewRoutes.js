@@ -13,17 +13,18 @@ const {
 const { protect, restrictTo } = authController;
 
 const reviewRouter = express.Router({ mergeParams: true });
+reviewRouter.use(protect);
 
 // Nested routes for the reviews
 reviewRouter
   .route('/')
-  .post(protect, restrictTo('user'), setTourUserIds, createReview)
-  .get(protect, setTourUserIds, getAllReviewsSpecificTour);
+  .post(restrictTo('user'), setTourUserIds, createReview)
+  .get(setTourUserIds, getAllReviewsSpecificTour);
 
 reviewRouter
   .route('/:id')
-  .get(protect, getReview)
-  .delete(protect, deleteReview)
-  .patch(protect, updateReview);
+  .get(getReview)
+  .delete(restrictTo('user', 'admin'), deleteReview)
+  .patch(restrictTo('user', 'admin'), updateReview);
 
 module.exports = reviewRouter;

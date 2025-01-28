@@ -27,14 +27,19 @@ tourRouter.use('/:tourId/reviews', reviewRouter);
 
 // Tours
 // Middelware for checking if the request was ok when trying to create a new tour
-tourRouter.route('/tour-stats').get(protect, getToursStats);
-tourRouter.route('/montly-plan/:year').get(protect, getMontlyPlan);
-tourRouter.route('/top-5-cheap').get(protect, aliasTopTours, getAllTours);
-tourRouter.route('/').get(protect, getAllTours).post(protect, postTour);
+tourRouter.route('/tour-stats').get(getToursStats);
+tourRouter
+  .route('/montly-plan/:year')
+  .get(protect, restrictTo('admin', 'lead-guide'), getMontlyPlan);
+tourRouter.route('/top-5-cheap').get(aliasTopTours, getAllTours);
+tourRouter
+  .route('/')
+  .get(getAllTours)
+  .post(protect, restrictTo('admin', 'lead-guide'), postTour);
 tourRouter
   .route('/:id')
-  .get(protect, getTour)
-  .patch(protect, updateTour)
-  .delete(protect, deleteTour);
+  .get(getTour)
+  .patch(protect, restrictTo('admin', 'lead-guide'), updateTour)
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 module.exports = tourRouter;
