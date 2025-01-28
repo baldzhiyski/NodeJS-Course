@@ -68,6 +68,12 @@ exports.createUser = (req, res) => {
   });
 };
 
+// Middleware so we can set the params id and reuse the getOne Method from the handlerFactory.js file
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+exports.getProfile = factory.getOne(User);
 exports.getUser = factory.getOne(User);
 exports.getAllUsers = factory.getAll(User);
 exports.deleteUser = factory.deleteOne(User);

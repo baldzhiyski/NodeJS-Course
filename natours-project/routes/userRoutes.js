@@ -10,6 +10,8 @@ const {
   deleteUser,
   updateMe,
   deleteMe,
+  getMe,
+  getProfile,
 } = userController;
 
 const {
@@ -30,6 +32,7 @@ userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
 userRouter.patch('/updatePassword', protect, updatePassword);
 userRouter.delete('/deleteMe', protect, deleteMe);
+userRouter.get('/me', protect, getMe, getProfile);
 
 // Users
 userRouter.patch('/updateMe', protect, restrictTo('admin'), updateMe);
