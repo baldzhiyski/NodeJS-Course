@@ -91,7 +91,7 @@ userSchema.pre('save', async function (next) {
 // Do not display inactive accounts , only active ones when displaying all users
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
-  this.select('-__v ');
+  this.select(' -__v ');
   next();
 });
 
