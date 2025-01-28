@@ -3,6 +3,7 @@ const { handleResponse } = require('../utils/handlers.js');
 const APIFeatures = require('../utils/apiFeatures.js');
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory.js');
 
 /**
  * Filters an object to include only specified allowed fields.
@@ -84,16 +85,5 @@ exports.createUser = (req, res) => {
   });
 };
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
-
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+exports.deleteUser = factory.deleteOne(User);
+exports.updateUser = factory.updateOne(User);

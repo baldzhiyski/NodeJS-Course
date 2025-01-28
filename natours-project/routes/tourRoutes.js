@@ -35,6 +35,6 @@ tourRouter
   .route('/:id')
   .get(protect, getTour)
   .patch(protect, updateTour)
-  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
+  .delete(protect, deleteTour);
 
 module.exports = tourRouter;

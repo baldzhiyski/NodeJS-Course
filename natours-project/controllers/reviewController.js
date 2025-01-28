@@ -3,16 +3,18 @@ const APIFeatures = require('../utils/apiFeatures.js');
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync.js');
 const { handleResponse } = require('../utils/handlers.js');
+const factory = require('./handlerFactory.js');
 
-exports.createReview = catchAsync(async (req, res, next) => {
-  // Nested routes
+// Middleware for setting the tour id and the user id
+
+exports.setTourUserIds = (req, res, next) => {
+  // Allow nested routes
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
 
-  const newReview = await Review.create(req.body);
-
-  handleResponse(res, { review: newReview }, 'success');
-});
+exports.createReview = factory.createOne(Review);
 
 exports.getAllReviewsSpecificTour = catchAsync(async (req, res, next) => {
   const tourId = req.body.tour || req.params.tourId;
@@ -30,3 +32,6 @@ exports.getAllReviewsSpecificTour = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteReview = factory.deleteOne(Review);
+exports.updateReview = factory.updateOne(Review);

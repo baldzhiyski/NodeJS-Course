@@ -2,6 +2,7 @@ const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures.js');
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync.js');
+const factory = require('./handlerFactory.js');
 
 const { handleResponse, handleError } = require('../utils/handlers.js');
 
@@ -32,29 +33,10 @@ exports.getTour = catchAsync(async (req, res, next) => {
   handleResponse(res, { tour });
 });
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!updatedTour) {
-    return next(new AppError(`No tour found with id : ${req.params.id}`, 404));
-  }
-  handleResponse(res, { tour: updatedTour });
-});
+exports.updateTour = factory.updateOne(Tour);
+exports.postTour = factory.createOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
 
-exports.postTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-  handleResponse(res, { tour: newTour }, 'success', 201);
-});
-
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-  if (!tour) {
-    return next(new AppError(`No tour found with id : ${req.params.id}`, 404));
-  }
-  handleResponse(res, null, 'success', 204);
-});
 exports.getToursStats = catchAsync(async (req, res) => {
   // Using Mongoose's aggregation pipeline to calculate statistical data for tours.
   const stats = await Tour.aggregate([

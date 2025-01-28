@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 exports.handleResponse = (res, data, message = 'success', status = 200) => {
   res.status(status).json({
     status: message,
