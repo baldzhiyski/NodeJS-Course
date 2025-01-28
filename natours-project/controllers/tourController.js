@@ -14,25 +14,8 @@ exports.aliasTopTours = async (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res) => {
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .limitFields()
-    .paginate()
-    .sort();
-  const tours = await features.query;
-
-  handleResponse(res, { tours }, 'success');
-});
-
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-  if (!tour) {
-    return next(new AppError(`No tour found with id : ${req.params.id}`, 404));
-  }
-  handleResponse(res, { tour });
-});
-
+exports.getAllTours = factory.getAll(Tour);
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.updateTour = factory.updateOne(Tour);
 exports.postTour = factory.createOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);

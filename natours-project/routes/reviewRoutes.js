@@ -7,6 +7,7 @@ const {
   deleteReview,
   updateReview,
   setTourUserIds,
+  getReview,
 } = reviewController;
 
 const { protect, restrictTo } = authController;
@@ -21,6 +22,7 @@ reviewRouter
 
 reviewRouter
   .route('/:id')
+  .get(protect, getReview)
   .delete(protect, deleteReview)
   .patch(protect, updateReview);
 

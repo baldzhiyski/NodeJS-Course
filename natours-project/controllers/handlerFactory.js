@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const { handleResponse } = require('../utils/handlers');
+const APIFeatures = require('../utils/apiFeatures');
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -27,4 +28,36 @@ exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const created = await Model.create(req.body);
     handleResponse(res, created, 'success', 201);
+  });
+
+exports.getOne = (Model, populateOptions) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (populateOptions) {
+      query = query.populate(populateOptions);
+    }
+    const data = await query;
+    if (!data) {
+      return next(new AppError(`No doc found with id : ${req.params.id}`, 404));
+    }
+    handleResponse(res, data);
+  });
+
+exports.getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    // This filters is needed so that the route for the reviews for specific tour can also work
+    let filter = {};
+
+    if (req.params.tourId) {
+      filter = { tour: req.params.tourId };
+    }
+
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .limitFields()
+      .paginate()
+      .sort();
+    const data = await features.query;
+
+    handleResponse(res, data, 'success');
   });
