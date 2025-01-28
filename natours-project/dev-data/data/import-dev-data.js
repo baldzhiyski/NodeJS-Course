@@ -37,6 +37,8 @@ const reviews = JSON.parse(
 
 // import data into db
 
+// In order to import , we need to manually turn off the middlewares in the model !
+
 const importData = async () => {
   try {
     await Tour.create(tours);

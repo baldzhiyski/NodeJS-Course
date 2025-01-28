@@ -106,6 +106,8 @@ const toursSchema = new mongoose.Schema({
     },
   ],
 });
+toursSchema.index({ price: 1, ratingsAverage: -1 });
+toursSchema.index({ slug: 1 });
 
 // We do not use a callback (arrow function) here because we need the `this` keyword to refer to the specific document (tour).
 // This property will be available only when we get the data , not in the collection
@@ -118,11 +120,11 @@ toursSchema.set('toJSON', { virtuals: true });
 toursSchema.set('toObject', { virtuals: true });
 
 // Document Middleware : run before the .save() and .create() command. Like in express we also need in mongoose to say next at the end !
-// toursSchema.pre('save', function (next) {
-//   this.slug = slugify(this.name, { lower: true });
+toursSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
 
-//   next();
-// });
+  next();
+});
 
 // toursSchema.post('save', function (doc, next) {
 //   console.log(' Document saved !');
