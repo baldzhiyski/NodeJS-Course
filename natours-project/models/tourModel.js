@@ -112,6 +112,8 @@ const toursSchema = new mongoose.Schema({
 toursSchema.index({ price: 1, ratingsAverage: -1 });
 toursSchema.index({ slug: 1 });
 
+toursSchema.index({ startLocation: '2dsphere' });
+
 // We do not use a callback (arrow function) here because we need the `this` keyword to refer to the specific document (tour).
 // This property will be available only when we get the data , not in the collection
 toursSchema.virtual('durationWeeks').get(function () {

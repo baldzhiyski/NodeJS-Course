@@ -143,3 +143,27 @@ exports.getMontlyPlan = catchAsync(async (req, res) => {
   // handleResponse is a helper function to format and send the response.
   handleResponse(res, plan);
 });
+
+// /tours-within/233/center/34.111745,-188.113491/unit/mi
+// Find tours within your current address
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        'Please provide latitutr and longitude in the format lat,lng.',
+        400
+      )
+    );
+  }
+
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  handleResponse(res, tours);
+});

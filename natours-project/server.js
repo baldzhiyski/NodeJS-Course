@@ -7,39 +7,24 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-// Load environment variables
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
-// Replace placeholder in the database URL
 const DB = process.env.DATABASE_URL.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
 
-// Connect to the database
-mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true, // Newer and more recommended option
-  })
-  .then(() => {
-    console.log('DB connection successful');
-  })
-  .catch((err) => {
-    console.error('DB connection error:', err);
-  });
+mongoose.connect(DB, {}).then(() => console.log('DB connection successful!'));
 
-// Start the server
 const port = process.env.PORT || 3000;
-
 const server = app.listen(port, () => {
-  console.log(`App running on port ${port}`);
+  console.log(`App running on port ${port}...`);
 });
 
 process.on('unhandledRejection', (err) => {
-  console.log(err.message);
-  console.log('UNHANDLED REJECTION ! Shutting down ... ');
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
   server.close(() => {
     process.exit(1);
   });

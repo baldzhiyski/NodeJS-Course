@@ -11,6 +11,7 @@ const {
   aliasTopTours,
   getToursStats,
   getMontlyPlan,
+  getToursWithin,
 } = tourController;
 
 const { protect, restrictTo } = authController;
@@ -41,5 +42,9 @@ tourRouter
   .get(getTour)
   .patch(protect, restrictTo('admin', 'lead-guide'), updateTour)
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
+
+tourRouter
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
 
 module.exports = tourRouter;
