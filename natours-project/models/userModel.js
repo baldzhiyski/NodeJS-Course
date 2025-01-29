@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const Review = require('./reviewModel');
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -93,6 +94,17 @@ userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   this.select(' -__v ');
   next();
+});
+
+// User schema: Pre hook to delete all reviews associated with the user before deleting the user document
+userSchema.pre('findOneAndDelete', async function (next) {
+  // Access the user that is going to be deleted (from the 'this' context)
+  const userId = this.getQuery()['_id'];
+
+  // Delete all reviews where the user is referenced (assuming 'user' field in review schema)
+  await Review.deleteMany({ user: userId });
+
+  next(); // Continue with the deletion process
 });
 
 // Adding a method to the userSchema to verify passwords

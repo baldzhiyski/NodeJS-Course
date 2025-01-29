@@ -3,6 +3,8 @@ const AppError = require('../utils/appError');
 const { handleResponse } = require('../utils/handlers');
 const APIFeatures = require('../utils/apiFeatures');
 
+// When we delete user , we want to delete all reviews from him/her.
+// When we delete tour , we want to delete all reviews associate with the tour
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);

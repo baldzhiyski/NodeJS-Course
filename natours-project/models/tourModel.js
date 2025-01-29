@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Review = require('./reviewModel');
 const slugify = require('slugify');
 // const User = require('./userModel');
 
@@ -172,6 +173,17 @@ toursSchema.pre(/^find/, function (next) {
 toursSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds !`);
   next();
+});
+
+// Tour schema: Pre hook to delete all reviews associated with the tour before deleting the tour document
+toursSchema.pre('findOneAndDelete', async function (next) {
+  // Access the tour that is going to be deleted (from the 'this' context)
+  const tourId = this.getQuery()['_id'];
+
+  // Delete all reviews where the tour is referenced (assuming 'tour' field in review schema)
+  await Review.deleteMany({ tour: tourId });
+
+  next(); // Continue with the deletion process
 });
 
 // Aggregation Middleware
