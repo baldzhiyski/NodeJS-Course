@@ -224,7 +224,7 @@ exports.getDistancesFromLocationToTours = catchAsync(async (req, res, next) => {
       },
     },
     {
-      // `$project` stage to select only the relevant fields
+      // `$project` stage to select only the relevant fields .
       $project: {
         // Include the 'distance' field and the 'name' of each tour in the response
         distance: 1,
