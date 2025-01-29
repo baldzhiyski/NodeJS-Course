@@ -12,6 +12,7 @@ const {
   getToursStats,
   getMontlyPlan,
   getToursWithin,
+  getDistancesFromLocationToTours,
 } = tourController;
 
 const { protect, restrictTo } = authController;
@@ -46,5 +47,9 @@ tourRouter
 tourRouter
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(getToursWithin);
+
+tourRouter
+  .route('/distances/:latlng/unit/:unit')
+  .get(getDistancesFromLocationToTours);
 
 module.exports = tourRouter;

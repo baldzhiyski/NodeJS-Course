@@ -167,3 +167,72 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 
   handleResponse(res, tours);
 });
+
+// Define the function to calculate distances from a specific location to all tours
+// To ensure that the $geoNear query works efficiently, the startLocation field in your Tour model must have a geospatial index.
+exports.getDistancesFromLocationToTours = catchAsync(async (req, res, next) => {
+  // Destructure the parameters from the request
+  const { latlng, unit } = req.params;
+
+  // Split the latlng string into latitude and longitude values
+  const [lat, lng] = latlng.split(',');
+
+  // Check if both latitude and longitude are provided
+  if (!lat || !lng) {
+    // If either lat or lng is missing, throw an error with a 400 status
+    return next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400
+      )
+    );
+  }
+
+  // Convert the latitude and longitude values to numbers (they come as strings from req.params)
+  const latitude = parseFloat(lat);
+  const longitude = parseFloat(lng);
+
+  // Check if both latitude and longitude are valid numbers
+  if (isNaN(latitude) || isNaN(longitude)) {
+    // If not, throw an error indicating invalid coordinates
+    return next(
+      new AppError(
+        'Invalid latitude or longitude value. Please provide valid numbers.',
+        400
+      )
+    );
+  }
+
+  // Calculate the multiplier based on the unit (miles or kilometers)
+  // Example: If the unit is 'mi' (miles), use a multiplier to convert the distance accordingly
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // Miles or Kilometers conversion
+
+  // Use MongoDB aggregation to calculate distances
+  const distances = await Tour.aggregate([
+    {
+      // `$geoNear` stage to calculate distances from the provided location
+      $geoNear: {
+        // The reference location (the point from which distances will be calculated)
+        near: {
+          type: 'Point', // The type of the location (Point for lat, lng)
+          coordinates: [longitude, latitude], // MongoDB expects [longitude, latitude]
+        },
+        // The name of the field where the distance will be stored
+        distanceField: 'distance',
+        // Optionally multiply the distance by a value based on the unit (mi or km)
+        distanceMultiplier: multiplier,
+      },
+    },
+    {
+      // `$project` stage to select only the relevant fields
+      $project: {
+        // Include the 'distance' field and the 'name' of each tour in the response
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  // Handle the successful response and send the distances data to the client
+  handleResponse(res, distances);
+});
