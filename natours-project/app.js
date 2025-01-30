@@ -74,6 +74,17 @@ app.get('/', (req, res) => {
     user: 'Jonas',
   });
 });
+app.get('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All tours',
+  });
+});
+
+app.get('/tour', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'The Forest Hiker tour',
+  });
+});
 app.use(`${baseUrl}/tours`, tourRouter);
 app.use(`${baseUrl}/users`, userRouter);
 app.use(`${baseUrl}/reviews`, reviewRouter);
