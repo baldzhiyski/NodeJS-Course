@@ -829,6 +829,7 @@ body {
   list-style: none;
   display: -webkit-box;
   display: -ms-flexbox;
+  justify-content: flex-end;
   display: flex;
 }
 .footer__nav li {

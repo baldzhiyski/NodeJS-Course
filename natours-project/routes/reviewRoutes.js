@@ -24,7 +24,7 @@ reviewRouter
 reviewRouter
   .route('/:id')
   .get(getReview)
-  .delete(restrictTo('user', 'admin'), deleteReview)
+  .delete(restrictTo('admin'), deleteReview)
   .patch(restrictTo('user', 'admin'), updateReview);
 
 module.exports = reviewRouter;

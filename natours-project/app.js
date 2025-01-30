@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -12,6 +13,11 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 const app = express();
+
+app.set('view engine', 'pug'); // ✅ Corrected
+app.set('views', path.join(__dirname, 'views'));
+// Static file middleware
+app.use(express.static(path.join(__dirname, 'public')));
 
 const baseUrl = '/api/v1';
 
@@ -49,9 +55,6 @@ app.use(
   })
 );
 
-// Static file middleware
-app.use(express.static(`${__dirname}/public`));
-
 // Limit requests
 const limiter = rateLimit({
   max: 100,
@@ -65,6 +68,12 @@ app.use('/api', limiter);
 app.use(helmet());
 
 // Mounting the routes
+app.get('/', (req, res) => {
+  res.status(200).render('base', {
+    tour: 'The Forest hiker',
+    user: 'Jonas',
+  });
+});
 app.use(`${baseUrl}/tours`, tourRouter);
 app.use(`${baseUrl}/users`, userRouter);
 app.use(`${baseUrl}/reviews`, reviewRouter);
