@@ -157,11 +157,12 @@ toursSchema.virtual('reviews', {
 });
 
 // Query Middleware
-toursSchema.pre('findOne', function (next) {
+toursSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
   });
+
   next();
 });
 

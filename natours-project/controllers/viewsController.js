@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 exports.getOverview = catchAsync(async (req, res) => {
   // 1) Get tour data
@@ -15,8 +16,23 @@ exports.getOverview = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTour = (req, res) => {
-  res.status(200).render('tour', {
-    title: 'Get tour',
+exports.getTour = catchAsync(async (req, res, next) => {
+  const tourSlug = req.params.tourSlug;
+  const query = Tour.findOne({ slug: tourSlug });
+  const tour = await query.populate({
+    path: 'reviews',
+    select: 'review rating user', // ✅ Use 'select' instead of 'fields'
   });
-};
+  console.log(tour);
+
+  if (!tour) {
+    return next(
+      new AppError(`Tour with slug ${tourSlug} does not exist !`, 400)
+    );
+  }
+
+  res.status(200).render('tour', {
+    title: tour.name,
+    tour: tour,
+  });
+});
