@@ -32,25 +32,35 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
-const sendErrorProd = (err, res) => {
-  // Operational, trusted error: send message to client
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
+const sendErrorProd = (err, req, res) => {
+  const isApiRequest = req.originalUrl.startsWith('/api');
+  const isOperationalError = err.isOperational;
 
-    // Programming or other unknown error: don't leak error details
-  } else {
-    // 1) Log error
+  // API request: send JSON response
+  if (isApiRequest) {
+    if (isOperationalError) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+
+    // Programming or unknown error: log and send generic message
     console.error('ERROR 💥', err);
-
-    // 2) Send generic message
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!',
     });
   }
+
+  // Non-API request: render error page
+  const errorMessage = isOperationalError
+    ? err.message
+    : 'Please try again later...';
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: errorMessage,
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -69,5 +79,5 @@ module.exports = (err, req, res, next) => {
   if (error.name === 'TokenExpiredError')
     error = handleExpiredTokenError(error);
 
-  sendErrorProd(error, res);
+  sendErrorProd(error, req, res);
 };
