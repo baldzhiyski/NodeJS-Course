@@ -42,3 +42,9 @@ exports.getLogin = catchAsync(async (req, res, next) => {
     title: 'Log Into Your Account',
   });
 });
+
+exports.getProfile = catchAsync(async (req, res, next) => {
+  res.status(200).render('account', {
+    title: 'Profile',
+  });
+});
