@@ -261,30 +261,48 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 });
 
 // Only for rendered pages , no errors !
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   // 1) Check if the token exists
-  let token;
-  if (req.cookies.jwt) {
-    token = req.cookies.jwt;
 
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    const id = decoded.id;
-    const email = decoded.email;
+  try {
+    let token;
+    if (req.cookies.jwt) {
+      token = req.cookies.jwt;
 
-    // 3) Check existence of user
-    const user = await User.findOne({ _id: id, email: email });
-    if (!user) {
+      const decoded = await promisify(jwt.verify)(
+        token,
+        process.env.JWT_SECRET
+      );
+      const id = decoded.id;
+      const email = decoded.email;
+
+      // 3) Check existence of user
+      const user = await User.findOne({ _id: id, email: email });
+      if (!user) {
+        return next();
+      }
+
+      // 4) Check if user changed password after the token was issued
+      if (user.changedPasswordAfter(decoded.iat)) {
+        return next();
+      }
+      // There is a logged in user
+      // Make it accessible for our templates
+      res.locals.user = user;
       return next();
     }
-
-    // 4) Check if user changed password after the token was issued
-    if (user.changedPasswordAfter(decoded.iat)) {
-      return next();
-    }
-    // There is a logged in user
-    // Make it accessible for our templates
-    res.locals.user = user;
+    next();
+  } catch (e) {
     return next();
   }
-  next();
-});
+};
+exports.logout = (req, res) => {
+  // Clear the JWT cookie by setting it to a past date
+  res.cookie('jwt', '', {
+    expires: new Date(0), // Expire the cookie immediately
+    httpOnly: true, // Ensure it’s only accessible through HTTP (not JS)
+  });
+
+  // Send a response indicating successful logout
+  handleResponse(res, null, 'success', 200);
+};

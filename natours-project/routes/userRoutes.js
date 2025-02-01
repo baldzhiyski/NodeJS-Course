@@ -22,6 +22,7 @@ const {
   updatePassword,
   protect,
   restrictTo,
+  logout,
 } = authController;
 const userRouter = express.Router();
 // Routes
@@ -29,6 +30,7 @@ const userRouter = express.Router();
 // Free for the public
 userRouter.post('/signup', signUp);
 userRouter.post('/login', login);
+userRouter.get('/logout', logout);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
 
