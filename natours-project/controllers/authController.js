@@ -35,6 +35,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   // 2) Verification of token
@@ -256,4 +258,33 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     status: 'success',
     token,
   });
+});
+
+// Only for rendered pages , no errors !
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  // 1) Check if the token exists
+  let token;
+  if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const id = decoded.id;
+    const email = decoded.email;
+
+    // 3) Check existence of user
+    const user = await User.findOne({ _id: id, email: email });
+    if (!user) {
+      return next();
+    }
+
+    // 4) Check if user changed password after the token was issued
+    if (user.changedPasswordAfter(decoded.iat)) {
+      return next();
+    }
+    // There is a logged in user
+    // Make it accessible for our templates
+    res.locals.user = user;
+    return next();
+  }
+  next();
 });

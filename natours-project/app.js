@@ -12,7 +12,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-
+const cookieParser = require('cookie-parser');
 const app = express();
 
 app.set('view engine', 'pug'); // ✅ Corrected
@@ -35,6 +35,9 @@ app.use(
     limit: '10kb',
   })
 );
+
+// Parses data from cookies
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
