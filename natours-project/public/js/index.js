@@ -1,5 +1,5 @@
 import { login, logout } from '../js/login';
-import { updateData } from '../js/updateSettings';
+import { updateSettings } from '../js/updateSettings';
 import '@babel/polyfill';
 
 // Dom Elements
@@ -28,6 +28,26 @@ if (userDataForm) {
       .getElementById('name')
       .value.split(' ');
 
-    updateData(firstName, lastName, email);
+    updateSettings({ firstName, lastName, email }, 'data');
   });
 }
+
+if (userPasswordForm)
+  userPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    document.querySelector('.btn--save-password').textContent = 'Updating...';
+
+    const password = document.getElementById('password-current').value;
+    const newPassword = document.getElementById('password').value;
+    const newPasswordConfirm =
+      document.getElementById('password-confirm').value;
+    await updateSettings(
+      { password, newPassword, newPasswordConfirm },
+      'password'
+    );
+
+    document.querySelector('.btn--save-password').textContent = 'Save password';
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
+  });
