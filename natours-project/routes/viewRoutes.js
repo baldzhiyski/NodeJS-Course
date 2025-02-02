@@ -10,7 +10,7 @@ const { protect, isLoggedIn } = require('../controllers/authController');
 const viewRouter = express.Router();
 // Use this middleware
 
-viewRouter.get('/', getOverview);
+viewRouter.get('/', isLoggedIn, getOverview);
 
 viewRouter.get('/login', isLoggedIn, getLogin);
 viewRouter.get('/account', protect, getProfile);
