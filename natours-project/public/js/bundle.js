@@ -11955,6 +11955,7 @@ var updateSettings = exports.updateSettings = /*#__PURE__*/function () {
           res = _context.sent;
           if (res.data.status === 'success') {
             (0, _alert.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully!"));
+            location.assign('/account');
           }
           _context.next = 11;
           break;
@@ -12898,16 +12899,17 @@ if (logOutBtn) {
 if (userDataForm) {
   userDataForm.addEventListener('submit', function (e) {
     e.preventDefault();
+    var form = new FormData();
     var email = document.getElementById('email').value;
     var _document$getElementB = document.getElementById('name').value.split(' '),
       _document$getElementB2 = _slicedToArray(_document$getElementB, 2),
       firstName = _document$getElementB2[0],
       lastName = _document$getElementB2[1];
-    (0, _updateSettings.updateSettings)({
-      firstName: firstName,
-      lastName: lastName,
-      email: email
-    }, 'data');
+    form.append('firstName', firstName);
+    form.append('lastName', lastName);
+    form.append('email', email);
+    form.append('photo', document.getElementById('photo').files[0]);
+    (0, _updateSettings.updateSettings)(form, 'data');
   });
 }
 if (userPasswordForm) userPasswordForm.addEventListener('submit', /*#__PURE__*/function () {

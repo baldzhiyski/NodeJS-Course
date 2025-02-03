@@ -23,12 +23,17 @@ if (logOutBtn) {
 if (userDataForm) {
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    const form = new FormData();
     const email = document.getElementById('email').value;
     const [firstName, lastName] = document
       .getElementById('name')
       .value.split(' ');
+    form.append('firstName', firstName);
+    form.append('lastName', lastName);
+    form.append('email', email);
+    form.append('photo', document.getElementById('photo').files[0]);
 
-    updateSettings({ firstName, lastName, email }, 'data');
+    updateSettings(form, 'data');
   });
 }
 
