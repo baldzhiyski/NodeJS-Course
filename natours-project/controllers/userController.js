@@ -17,11 +17,11 @@ const multerStorage = multer.diskStorage({
   },
 });
 
-const multerFilter = (req, res, cb) => {
+const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cv(new AppError('Not an image! Please upload only images.', 400), false);
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
   }
 };
 
@@ -64,6 +64,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
   // 2) Update user document
   const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email');
+  if (req.file) {
+    filteredBody.imageUrl = req.file.filename;
+  }
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
