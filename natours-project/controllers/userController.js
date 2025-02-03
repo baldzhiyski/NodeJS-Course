@@ -4,6 +4,31 @@ const APIFeatures = require('../utils/apiFeatures.js');
 const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory.js');
+const multer = require('multer');
+
+// Define some settings for the multer for the middleware
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/img/users');
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split('/')[1];
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, res, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cv(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 /**
  * Filters an object to include only specified allowed fields.
@@ -73,6 +98,8 @@ exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
 };
+
+exports.uploadUserPic = upload.single('photo');
 exports.getProfile = factory.getOne(User);
 exports.getUser = factory.getOne(User);
 exports.getAllUsers = factory.getAll(User);

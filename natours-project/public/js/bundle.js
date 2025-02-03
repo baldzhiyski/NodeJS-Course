@@ -11895,15 +11895,12 @@ var logout = exports.logout = /*#__PURE__*/function () {
           _context2.next = 3;
           return (0, _axios.default)({
             method: 'GET',
-            url: '/api/v1/users/logout' // Call your logout API endpoint if needed
+            url: 'http://localhost:3000/api/v1/users/logout' // Call your logout API endpoint if needed
           });
         case 3:
           res = _context2.sent;
           // If the logout was successful, clear the token and reload or redirect
           if (res.data.status === 'success') {
-            // Clear the token from localStorage (or sessionStorage)
-            localStorage.removeItem('jwt'); // or sessionStorage.removeItem('jwt');
-
             // Optionally, show a success message
             (0, _alert.showAlert)('success', 'Logging out ...');
 
@@ -12970,7 +12967,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54189" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55983" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

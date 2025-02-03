@@ -35,14 +35,11 @@ export const logout = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: '/api/v1/users/logout', // Call your logout API endpoint if needed
+      url: 'http://localhost:3000/api/v1/users/logout', // Call your logout API endpoint if needed
     });
 
     // If the logout was successful, clear the token and reload or redirect
     if (res.data.status === 'success') {
-      // Clear the token from localStorage (or sessionStorage)
-      localStorage.removeItem('jwt'); // or sessionStorage.removeItem('jwt');
-
       // Optionally, show a success message
       showAlert('success', 'Logging out ...');
 
