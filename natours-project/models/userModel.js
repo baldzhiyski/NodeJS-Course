@@ -53,7 +53,10 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin', 'guide', 'lead-guide'],
     default: 'user',
   },
-  imageUrl: String,
+  imageUrl: {
+    type: String,
+    default: 'default.jpg',
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
