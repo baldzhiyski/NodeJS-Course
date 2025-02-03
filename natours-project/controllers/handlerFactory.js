@@ -21,7 +21,7 @@ exports.updateOne = (Model) =>
       new: true,
       runValidators: true,
     });
-    if (!updatedTour) {
+    if (!updated) {
       return next(new AppError(`No doc found with id : ${req.params.id}`, 404));
     }
     handleResponse(res, updated);

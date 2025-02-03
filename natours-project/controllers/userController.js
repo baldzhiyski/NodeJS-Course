@@ -55,13 +55,13 @@ const filterObj = (obj, ...allowedFields) => {
 };
 exports.uploadUserPic = upload.single('photo');
 
-exports.resizeUserPic = (req, res, next) => {
+exports.resizeUserPic = async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.fileName = `user-${req.user.id}-${Date.now()}.jpeg`;
 
   // taking the image from the buffer
-  sharp(req.file.buffer)
+  await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
