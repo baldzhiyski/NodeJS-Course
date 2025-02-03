@@ -5,17 +5,19 @@ const AppError = require('../utils/appError.js');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory.js');
 const multer = require('multer');
+const sharp = require('sharp');
 
 // Define some settings for the multer for the middleware
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/img/users');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  },
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
+const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
@@ -51,6 +53,22 @@ const filterObj = (obj, ...allowedFields) => {
 
   return newObj;
 };
+exports.uploadUserPic = upload.single('photo');
+
+exports.resizeUserPic = (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.fileName = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  // taking the image from the buffer
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.fileName}`);
+
+  next();
+};
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
@@ -65,7 +83,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 2) Update user document
   const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email');
   if (req.file) {
-    filteredBody.imageUrl = req.file.filename;
+    filteredBody.imageUrl = req.file.fileName;
   }
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
@@ -102,7 +120,6 @@ exports.getMe = (req, res, next) => {
   next();
 };
 
-exports.uploadUserPic = upload.single('photo');
 exports.getProfile = factory.getOne(User);
 exports.getUser = factory.getOne(User);
 exports.getAllUsers = factory.getAll(User);

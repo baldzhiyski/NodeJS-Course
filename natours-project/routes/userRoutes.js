@@ -13,6 +13,7 @@ const {
   getMe,
   getProfile,
   uploadUserPic,
+  resizeUserPic,
 } = userController;
 
 const {
@@ -39,7 +40,7 @@ userRouter.patch('/resetPassword/:token', resetPassword);
 userRouter.use(protect);
 userRouter.patch('/updatePassword', updatePassword);
 userRouter.delete('/deleteMe', deleteMe);
-userRouter.patch('/updateMe', uploadUserPic, updateMe);
+userRouter.patch('/updateMe', uploadUserPic, resizeUserPic, updateMe);
 userRouter.get('/me', getMe, getProfile);
 
 // Users
