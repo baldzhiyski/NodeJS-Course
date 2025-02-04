@@ -5,7 +5,7 @@ const { handleResponse } = require('../utils/handlers');
 const AppError = require('../utils/appError');
 const jwt = require('jsonwebtoken');
 const { decode } = require('punycode');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 const crypto = require('crypto');
 const cookieOptions = {
   expiresIn: new Date(
@@ -102,9 +102,14 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
 
+  const url = `${req.protocol}://${req.get('host')}/account`;
+
   const token = signToken(newUser._id, newUser.email);
 
   res.cookie('jwt', token, cookieOptions);
+
+  // Here we send the email to the newly registered user
+  await new Email(newUser, url).sendWelcome();
 
   return res.status(201).json({
     status: 'success',
@@ -163,11 +168,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const message = `Forgot your password ? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password ,please ignore this email !`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 minutes )',
-      message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10 minutes )',
+    //   message,
+    // });
   } catch (err) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
