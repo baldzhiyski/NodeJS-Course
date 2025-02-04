@@ -21,3 +21,16 @@ export const updateSettings = async (data, type) => {
     showAlert('error', err.response.data.message);
   }
 };
+export const resetPassword = async (email) => {
+  try {
+    const res = await axios.post('/api/v1/users/forgotPassword', { email });
+
+    if (res.status === 200) {
+      showAlert('success', 'Reset link sent! Check your email.');
+    } else {
+      showAlert('error', `Error: ${res.data.message}`);
+    }
+  } catch (err) {
+    showAlert('error', err.response?.data?.message || 'Something went wrong.');
+  }
+};

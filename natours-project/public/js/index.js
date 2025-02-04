@@ -1,5 +1,5 @@
 import { login, logout } from '../js/login';
-import { updateSettings } from '../js/updateSettings';
+import { updateSettings, resetPassword } from '../js/updateSettings';
 import '@babel/polyfill';
 
 // Dom Elements
@@ -7,6 +7,7 @@ const loginForm = document.querySelector('.login-form');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const resetPassButton = document.getElementById('send-reset-btn');
 
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
@@ -55,4 +56,16 @@ if (userPasswordForm)
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
+  });
+
+document
+  .getElementById('send-reset-btn')
+  .addEventListener('click', async () => {
+    const email = document.getElementById('email-reset').value;
+    if (!email) {
+      alert('Please enter your email');
+      return;
+    }
+
+    await resetPassword(email);
   });

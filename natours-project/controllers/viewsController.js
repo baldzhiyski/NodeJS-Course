@@ -48,3 +48,15 @@ exports.getProfile = catchAsync(async (req, res, next) => {
     title: 'Profile',
   });
 });
+
+exports.getForgotPass = (req, res, next) => {
+  res.status(200).render('forgotPassword', {
+    title: 'Forgot My Password',
+  });
+};
+
+exports.getWindowForChangePass = (req, res, next) => {
+  res.status(200).render('changeForgotPass', {
+    title: 'Change Password',
+  });
+};
