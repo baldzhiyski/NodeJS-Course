@@ -34,7 +34,7 @@ module.exports = class Email {
       {
         firstName: this.firstName,
         lastName: this.lastName,
-        user: this.url,
+        url: this.url,
         subject,
       }
     );
@@ -56,5 +56,12 @@ module.exports = class Email {
 
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natours Family !');
+  }
+
+  async passwordReset() {
+    await this.send(
+      'passwordReset',
+      'Your password reset token (valid for 10 Minutes )'
+    );
   }
 };
