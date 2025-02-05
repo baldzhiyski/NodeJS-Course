@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const { decode } = require('punycode');
 const Email = require('../utils/email');
 const crypto = require('crypto');
+const Tour = require('../models/tourModel');
 const cookieOptions = {
   expiresIn: new Date(
     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000
@@ -26,6 +27,13 @@ const signToken = (id, email) =>
       expiresIn: process.env.JWT_EXPIRES_IN,
     }
   );
+
+exports.addUserAndTourForBooking = catchAsync(async (req, res, next) => {
+  req.body.user = req.user;
+  const tour = await Tour.findById(req.params.tourId);
+  req.body.tour = tour;
+  next();
+});
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Check if the token exists

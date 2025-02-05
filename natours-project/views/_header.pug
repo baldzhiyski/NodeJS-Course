@@ -4,13 +4,13 @@ header.header
     .header__logo 
         img(src="/img/logo-white.png", alt="Natours Logo")
     nav.nav.nav--user 
-      if user 
-        a.nav__el.nav__el--logout Log Out
-        a.nav__el(href="") My bookins
-            a.nav__el(href="account") 
+        if (user) 
+            a.nav__el.nav__el--logout Log Out
+            a.nav__el(href="/my-tours") My bookings
+            a.nav__el(href="/account") 
                 img.nav__user-img(src=`/img/users/${user.imageUrl}`, alt="User logo")
                 span=user.firstName 
       
-      else
-        a.nav__el(href='login') Log In
-        button.nav__el.nav__el--cta Sign Up
+        else
+            a.nav__el(href='/login') Log In
+            button.nav__el.nav__el--cta Sign Up

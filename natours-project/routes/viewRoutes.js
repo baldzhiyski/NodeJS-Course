@@ -6,7 +6,9 @@ const {
   getProfile,
   getForgotPass,
   getWindowForChangePass,
+  getMyTours,
 } = require('../controllers/viewsController');
+
 const { protect, isLoggedIn } = require('../controllers/authController');
 
 const viewRouter = express.Router();
@@ -18,6 +20,7 @@ viewRouter.get('/login', isLoggedIn, getLogin);
 viewRouter.get('/forgot-password', getForgotPass);
 // viewRouter.get('/changeForgottetPassword/:token', getWindowForChangePass);
 viewRouter.get('/account', protect, getProfile);
-viewRouter.get('/tour/:tourSlug', protect, getTour);
+viewRouter.get('/tour/:tourSlug', isLoggedIn, getTour);
 
+viewRouter.get('/my-tours', protect, getMyTours);
 module.exports = viewRouter;

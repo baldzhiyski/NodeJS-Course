@@ -1,5 +1,6 @@
 import { login, logout } from '../js/login';
 import { updateSettings, resetPassword } from '../js/updateSettings';
+import { bookTour } from './booking';
 import '@babel/polyfill';
 
 // Dom Elements
@@ -8,6 +9,7 @@ const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const resetPassButton = document.getElementById('send-reset-btn');
+const bookBtn = document.getElementById('book-tour');
 
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
@@ -58,9 +60,8 @@ if (userPasswordForm)
     document.getElementById('password-confirm').value = '';
   });
 
-document
-  .getElementById('send-reset-btn')
-  .addEventListener('click', async () => {
+if (resetPassButton) {
+  resetPassButton.addEventListener('click', async () => {
     const email = document.getElementById('email-reset').value;
     if (!email) {
       alert('Please enter your email');
@@ -68,4 +69,11 @@ document
     }
 
     await resetPassword(email);
+  });
+}
+
+if (bookBtn)
+  bookBtn.addEventListener('click', (e) => {
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
   });
