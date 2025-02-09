@@ -14,6 +14,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const app = express();
 
 app.set('view engine', 'pug'); // ✅ Corrected
@@ -59,6 +60,8 @@ app.use(
     ],
   })
 );
+
+app.use(compression());
 
 // Limit requests
 const limiter = rateLimit({

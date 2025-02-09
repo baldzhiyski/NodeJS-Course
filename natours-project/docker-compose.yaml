@@ -1,0 +1,44 @@
+
+services:
+  app:
+    image: baldzhiyski/natours-app:latest
+    build:
+      context: ./  # Build context set to the natours-project folder
+      dockerfile: docker/Dockerfile  # Dockerfile inside the 'docker' folder
+    container_name: natours-app
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - mongodb
+    env_file:
+      - .env  # .env is in the root of the natours-project folder
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      JWT_COOKIE_EXPIRES_IN: ${JWT_COOKIE_EXPIRES_IN}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_FROM: ${EMAIL_FROM}
+    volumes:
+      - ./:/app  # Mount the natours-project into the container at /app
+      - /app/node_modules  # Avoid conflicts with node_modules in local directory (not mounted locally)
+
+  mongodb:
+    image: mongo:6
+    container_name: my-mongo-db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ""  # Root username (empty if no authentication)
+      MONGO_INITDB_ROOT_PASSWORD: ""  # Root password (empty if no authentication)
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db  # Persist MongoDB data
+
+volumes:
+  mongo-data:  # Named volume to store MongoDB data persistently
