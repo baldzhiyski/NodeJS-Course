@@ -268,6 +268,14 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.LoggedInUserProceed = async (req, res, next) => {
+  if (res.locals.user) {
+    // If the user is already logged in, redirect them to the profile or homepage
+    return res.redirect('/'); // or '/home' or any page you prefer
+  }
+  next();
+};
+
 // Only for rendered pages , no errors !
 exports.isLoggedIn = async (req, res, next) => {
   // 1) Check if the token exists
