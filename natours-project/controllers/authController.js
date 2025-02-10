@@ -223,7 +223,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 4) Log the user in , send JWT
-  const token = signToken(user._id);
+  const token = signToken(user._id, user.email);
 
   res.cookie('jwt', token, cookieOptions);
 

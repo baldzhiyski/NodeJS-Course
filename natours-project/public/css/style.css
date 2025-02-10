@@ -1323,3 +1323,90 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+/* Divider Between OR */
+.or-divider {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.or-divider::before, .or-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.or-divider::before {
+  left: 0;
+}
+
+.or-divider::after {
+  right: 0;
+}
+
+/* Styling the "OR" Text */
+.or-divider {
+  font-weight: bold;
+  color: #888;
+  padding: 0 1rem;
+}
+
+/* GitHub Sign-Up Button */
+.github-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;  /* Smaller padding */
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 1rem;  /* Smaller font size */
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.2s;
+  text-decoration: none;
+  margin: 1.5rem auto;  /* Center the button */
+  width: 50%;  /* Set width to 50% */
+}
+
+.github-login:hover {
+  background-color: #444;
+  transform: translateY(-3px);
+}
+
+.github-login i {
+  margin-right: 0.5rem;  /* Reduce margin for better button balance */
+  font-size: 1.2rem;  /* Slightly smaller icon size */
+}
+
+/* GitHub Button Active/Focus State */
+.github-login:active {
+  background-color: #222;
+  transform: translateY(0);
+}
+
+.github-login:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.5);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .or-divider {
+      font-size: 1rem;
+  }
+
+  .github-login {
+      padding: 0.5rem 0.75rem;  /* Further reduce padding for smaller screens */
+      font-size: 0.95rem;
+      width: 60%;  /* Slightly increase width for smaller screens */
+  }
+
+  .github-login i {
+      font-size: 1rem;
+  }
+}

@@ -43,6 +43,12 @@ exports.getLogin = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRegisterPage = catchAsync(async (req, res, next) => {
+  res.status(200).render('register', {
+    title: 'Create an account',
+  });
+});
+
 exports.getProfile = catchAsync(async (req, res, next) => {
   res.status(200).render('account', {
     title: 'Profile',

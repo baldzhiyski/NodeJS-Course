@@ -98,7 +98,6 @@ const runIfDbEmpty = async () => {
     importData();
   } else {
     console.log('Database is not empty. Skipping data import.');
-    process.exit();
   }
 };
 
