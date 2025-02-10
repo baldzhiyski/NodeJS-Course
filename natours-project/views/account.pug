@@ -42,7 +42,8 @@ block content
               label.form__label(for='email') Email address
               input#email.form__input(type='email', value=`${user.email}`, required, name='email')
             .form__group.form__photo-upload
-              img.form__user-photo(src=`/img/users/${user.imageUrl}`, alt='User photo')
+              img.form__user-photo(src=user.imageUrl ? (user.imageUrl.startsWith('https://avatars.githubusercontent.com/') ? user.imageUrl : '/img/users/' + user.imageUrl) : '/img/default-avatar.jpg'
+  alt="User photo")
               input.form__upload(type='file',accept='image/*',id='photo' name='photo')
               label(for='photo') Choose new photo
             .form__group.right

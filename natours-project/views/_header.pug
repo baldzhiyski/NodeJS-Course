@@ -8,7 +8,8 @@ header.header
             a.nav__el.nav__el--logout Log Out
             a.nav__el(href="/my-tours") My bookings
             a.nav__el(href="/account") 
-                img.nav__user-img(src=`/img/users/${user.imageUrl}`, alt="User logo")
+                img.nav__user-img(src=user.imageUrl ? (user.imageUrl.startsWith('https://avatars.githubusercontent.com/') ? user.imageUrl : '/img/users/' + user.imageUrl) : '/img/default-avatar.jpg'
+  alt="User logo")
                 span=user.firstName 
       
         else

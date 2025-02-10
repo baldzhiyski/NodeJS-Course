@@ -15,6 +15,10 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const passport = require('./utils/passportConfig'); // Import passport config
+
+const jwt = require('jsonwebtoken');
+
 const app = express();
 
 app.set('view engine', 'pug'); // ✅ Corrected
@@ -73,8 +77,15 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Security HTTP Headers
-app.use(helmet());
-
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", 'https://avatars.githubusercontent.com/'],
+      // other directives like scriptSrc, styleSrc can be added as needed
+    },
+  })
+);
 // Mounting the routes
 app.use('/', viewRouter);
 app.use(`${baseUrl}/tours`, tourRouter);
@@ -82,6 +93,52 @@ app.use(`${baseUrl}/users`, userRouter);
 app.use(`${baseUrl}/reviews`, reviewRouter);
 app.use(`${baseUrl}/reviews`, reviewRouter);
 app.use(`${baseUrl}/bookings`, bookingRouter);
+
+// GitHub Auth Routes
+app.get(
+  '/auth/github',
+  passport.authenticate('github', { scope: ['read:user', 'user:email'] })
+);
+
+app.get('/auth/github/callback', async (req, res, next) => {
+  try {
+    passport.authenticate('github', async (err, user, info) => {
+      if (err) {
+        console.error('GitHub authentication error:', err);
+        return res
+          .status(500)
+          .json({ error: 'Authentication failed', details: err.message });
+      }
+
+      if (!user) {
+        return res.redirect('/login'); // Redirect if authentication fails
+      }
+
+      // ✅ Generate a JWT instead of using req.logIn
+      const token = jwt.sign(
+        { id: user.id, email: user.email }, // Payload
+        process.env.JWT_SECRET,
+        {
+          expiresIn: process.env.JWT_EXPIRES_IN,
+        }
+      );
+
+      console.log('User authenticated successfully:', user);
+
+      // ✅ Send JWT to the frontend (or store it in a cookie)
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
+      return res.redirect('/'); // Redirect after successful login
+    })(req, res, next);
+  } catch (error) {
+    console.error('Unexpected error during authentication:', error);
+    return res
+      .status(500)
+      .json({ error: 'Internal Server Error', details: error.message });
+  }
+});
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on the server !`, 404));

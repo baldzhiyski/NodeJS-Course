@@ -8,6 +8,7 @@ const { decode } = require('punycode');
 const Email = require('../utils/email');
 const crypto = require('crypto');
 const Tour = require('../models/tourModel');
+
 const cookieOptions = {
   expiresIn: new Date(
     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000
