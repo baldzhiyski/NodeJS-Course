@@ -3,27 +3,28 @@ block content
     main.main
         .register-form
             h2.heading-secondary.ma-bt-lg Create your account
-            .form__group
-                label.form__label(for='firstName') First Name
-                input#firstName.form__input(type='text', placeholder='John', required)
-            .form__group
-                label.form__label(for='lastName') Last Name
-                input#lastName.form__input(type='text', placeholder='Doe', required)
-            .form__group
-                label.form__label(for='email') Email address
-                input#email.form__input(type='email', placeholder='you@example.com', required)
-            .form__group
-                label.form__label(for='password') Password
-                input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
-            .form__group
-                label.form__label(for='confirmPassword') Confirm Password
-                input#confirmPassword.form__input(type='password', placeholder='••••••••', required, minlength='8')
-            .form__group
-                button#register-btn.btn.btn--green Register
-                |
-                a#login-link(href='/login', class='btn btn--text') Already have an account? 
-            .or-divider OR
-            .form__group
-                a.github-login(href='/auth/github', class='btn btn--github') 
-                    i.fab.fa-github Sign Up with GitHub
+            form.form
+                .form__group
+                    label.form__label(for='firstName') First Name
+                    input#firstName.form__input(type='text', placeholder='John', required)
+                .form__group
+                    label.form__label(for='lastName') Last Name
+                    input#lastName.form__input(type='text', placeholder='Doe', required)
+                .form__group
+                    label.form__label(for='email') Email address
+                    input#email.form__input(type='email', placeholder='you@example.com', required)
+                .form__group
+                    label.form__label(for="password") Password
+                    input#password.form__input(type="password" placeholder="••••••••" required minlength="8"  title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.")
+                .form__group
+                    label.form__label(for="confirmPassword") Confirm Password
+                    input#confirmPassword.form__input(type="password" placeholder="••••••••" required minlength="8" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.")
+                .form__group
+                    button#register-btn.btn.btn--green(type='submit') Register
+                    |
+                    a#login-link(href='/login', class='btn btn--text') Already have an account? 
+                .or-divider OR
+                .form__group.text-center
+                    a.github-login(href='/auth/github', class='btn btn--github') 
+                        i.fab.fa-github Sign Up with GitHub
 

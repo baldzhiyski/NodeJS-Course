@@ -50,3 +50,23 @@ export const logout = async () => {
     showAlert('error', 'Error logging out! Please try again...');
   }
 };
+
+export const registerUser = async (user) => {
+  try {
+    console.log(user);
+    const res = await axios({
+      method: 'POST',
+      url: '/api/v1/users/signup',
+      data: user,
+    });
+
+    if (res.data.status === 'success') {
+      showAlert('success', 'Register was successful !');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
+  } catch (error) {
+    showAlert('error', error.response.data.message);
+  }
+};

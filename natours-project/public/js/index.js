@@ -1,4 +1,4 @@
-import { login, logout } from '../js/login';
+import { login, logout, registerUser } from '../js/login';
 import { updateSettings, resetPassword } from '../js/updateSettings';
 import { bookTour } from './booking';
 import '@babel/polyfill';
@@ -10,6 +10,32 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const resetPassButton = document.getElementById('send-reset-btn');
 const bookBtn = document.getElementById('book-tour');
+const registerForm = document.querySelector('.register-form'); // Fix class name
+
+if (registerForm) {
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    const userToBeRegistered = {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPass: confirmPassword,
+      role: 'user',
+    };
+
+    console.log(userToBeRegistered);
+
+    registerUser(userToBeRegistered);
+  });
+}
 
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {

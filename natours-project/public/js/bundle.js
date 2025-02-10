@@ -11829,7 +11829,7 @@ var hideAlert = exports.hideAlert = function hideAlert() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.logout = exports.login = void 0;
+exports.registerUser = exports.logout = exports.login = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -11921,6 +11921,44 @@ var logout = exports.logout = /*#__PURE__*/function () {
   }));
   return function logout() {
     return _ref2.apply(this, arguments);
+  };
+}();
+var registerUser = exports.registerUser = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(user) {
+    var res;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          console.log(user);
+          _context3.next = 4;
+          return (0, _axios.default)({
+            method: 'POST',
+            url: '/api/v1/users/signup',
+            data: user
+          });
+        case 4:
+          res = _context3.sent;
+          if (res.data.status === 'success') {
+            (0, _alert.showAlert)('success', 'Register was successful !');
+            window.setTimeout(function () {
+              location.assign('/');
+            }, 1500);
+          }
+          _context3.next = 11;
+          break;
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](0);
+          (0, _alert.showAlert)('error', _context3.t0.response.data.message);
+        case 11:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 8]]);
+  }));
+  return function registerUser(_x3) {
+    return _ref3.apply(this, arguments);
   };
 }();
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"updateSettings.js":[function(require,module,exports) {
@@ -12971,6 +13009,28 @@ var userDataForm = document.querySelector('.form-user-data');
 var userPasswordForm = document.querySelector('.form-user-password');
 var resetPassButton = document.getElementById('send-reset-btn');
 var bookBtn = document.getElementById('book-tour');
+var registerForm = document.querySelector('.register-form'); // Fix class name
+
+if (registerForm) {
+  registerForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var firstName = document.getElementById('firstName').value;
+    var lastName = document.getElementById('lastName').value;
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('confirmPassword').value;
+    var userToBeRegistered = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      confirmPass: confirmPassword,
+      role: 'user'
+    };
+    console.log(userToBeRegistered);
+    (0, _login.registerUser)(userToBeRegistered);
+  });
+}
 if (loginForm) loginForm.addEventListener('submit', function (e) {
   e.preventDefault();
   var email = document.getElementById('email').value;
