@@ -120,6 +120,40 @@ exports.getMe = (req, res, next) => {
   next();
 };
 
+exports.updateMyFavourites = catchAsync(async (req, res, next) => {
+  try {
+    const { tourId, favorite } = req.body;
+    const userId = req.user.id; // Assuming user is authenticated
+
+    const update = favorite
+      ? { $addToSet: { favourites: tourId } } // Add tourId only if it doesn't exist
+      : { $pull: { favourites: tourId } }; // Remove tourId
+
+    const user = await User.findByIdAndUpdate(userId, update, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found' });
+
+    // Set dynamic success message
+    const message = favorite
+      ? 'Tour added to favorites successfully!'
+      : 'Tour removed from favorites.';
+
+    res.json({
+      status: 'success',
+      data: user,
+      message: message,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 exports.getProfile = factory.getOne(User);
 exports.getUser = factory.getOne(User);
 exports.getAllUsers = factory.getAll(User);

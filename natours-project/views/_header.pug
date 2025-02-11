@@ -8,10 +8,33 @@ header.header
             a.nav__el.nav__el--logout Log Out
             a.nav__el(href="/my-tours") My bookings
             a.nav__el(href="/account") 
-                img.nav__user-img(src=user.imageUrl ? (user.imageUrl.startsWith('https://avatars.githubusercontent.com/') ? user.imageUrl : '/img/users/' + user.imageUrl) : '/img/default-avatar.jpg'
-  alt="User logo")
-                span=user.firstName 
-      
-        else
+                img.nav__user-img(
+                    src=user.imageUrl 
+                        ? (user.imageUrl.startsWith('https://avatars.githubusercontent.com/') 
+                            ? user.imageUrl 
+                            : `/img/users/${user.imageUrl}`) 
+                        : '/img/default-avatar.jpg', 
+                    alt="User logo"
+                )
+                span= user.firstName 
+            
+            if (user.favourites && user.favourites.length > 0)
+                .nav__el.nav__el--favorites
+                    a#favorites-dropdown-toggle.nav__el(href="javascript:void(0);") Favorites ▾
+                    .dropdown-menu#favorites-dropdown(style="display: none;")
+                        each favorite in user.favourites
+                            a.dropdown-item(href=`/tour/${favorite.slug}`)
+                            img.dropdown-img(
+                                src=favorite.imageCover 
+                                ? `/img/tours/${favorite.imageCover}` 
+                                : '/img/default-tour.jpg', 
+                                alt=favorite.name
+                            )
+                            .dropdown-text
+                                span.dropdown-name= favorite.name
+                                span.dropdown-difficulty= favorite.difficulty
+
+
+        else 
             a.nav__el(href='/login') Log In
             a.nav__el(href='/register') Sign Up

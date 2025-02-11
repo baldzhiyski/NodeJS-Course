@@ -6,14 +6,20 @@ const Booking = require('../models/bookings');
 exports.getOverview = catchAsync(async (req, res) => {
   // 1) Get tour data
   const tours = await Tour.find();
+  // 2) Check if the user is logged in
+  let userFavorites = [];
+  if (res.locals.user) {
+    // Get the user's favorites if the user is logged in
+    userFavorites = res.locals.user.favourites.map((fav) => fav.id); // Assuming 'id' is the field in each favorite object
+  }
 
-  // 2) Build template
+  console.log(userFavorites); // This will now log an array of favorite IDs
 
-  // 3) Render that template using tour data from 1)
-
+  // 3) Render the overview template and pass tours + user favorites
   res.status(200).render('overview', {
     title: 'All tours',
     tours: tours,
+    userFavorites: userFavorites,
   });
 });
 

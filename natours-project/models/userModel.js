@@ -65,6 +65,11 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  favourites: {
+    type: [mongoose.Schema.Types.ObjectId], // Array of ObjectIds
+    ref: 'Tour',
+    default: [], // Set default to an empty array
+  },
 });
 
 //Pre-Save middleware
@@ -95,6 +100,10 @@ userSchema.pre('save', async function (next) {
 // Do not display inactive accounts , only active ones when displaying all users
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
+  this.populate({
+    path: 'favourites',
+    select: '_id name imageCover difficulty',
+  });
   this.select(' -__v ');
   next();
 });

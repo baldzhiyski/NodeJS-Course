@@ -14,6 +14,7 @@ const {
   getProfile,
   uploadUserPic,
   resizeUserPic,
+  updateMyFavourites,
 } = userController;
 
 const {
@@ -42,6 +43,7 @@ userRouter.patch('/updatePassword', updatePassword);
 userRouter.delete('/deleteMe', deleteMe);
 userRouter.patch('/updateMe', uploadUserPic, resizeUserPic, updateMe);
 userRouter.get('/me', getMe, getProfile);
+userRouter.post('/favourites', updateMyFavourites);
 
 // Users
 

@@ -1,6 +1,8 @@
+import axios from 'axios';
 import { login, logout, registerUser } from '../js/login';
 import { updateSettings, resetPassword } from '../js/updateSettings';
 import { bookTour } from './booking';
+import { toggleFavorite } from '../js/markFavourite';
 import '@babel/polyfill';
 
 // Dom Elements
@@ -11,6 +13,28 @@ const userPasswordForm = document.querySelector('.form-user-password');
 const resetPassButton = document.getElementById('send-reset-btn');
 const bookBtn = document.getElementById('book-tour');
 const registerForm = document.querySelector('.register-form'); // Fix class name
+
+const favoriteButtons = document.querySelectorAll('.favorite-btn');
+const favoritesToggle = document.getElementById('favorites-dropdown-toggle');
+const dropdownMenu = document.getElementById('favorites-dropdown');
+
+favoriteButtons.forEach((button) => {
+  button.addEventListener('click', () => toggleFavorite(button));
+});
+
+// Add event listener to the "Favorites" button
+if (favoritesToggle) {
+  favoritesToggle.addEventListener('click', function () {
+    const dropdown = document.getElementById('favorites-dropdown');
+
+    // Toggle the display of the dropdown menu
+    if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+      dropdown.style.display = 'block'; // Show the dropdown
+    } else {
+      dropdown.style.display = 'none'; // Hide the dropdown
+    }
+  });
+}
 
 if (registerForm) {
   registerForm.addEventListener('submit', (e) => {

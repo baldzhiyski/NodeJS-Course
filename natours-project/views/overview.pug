@@ -42,3 +42,13 @@ block content
                             span.card__footer-text=`reviews (${tour.ratingsQuantity})`
                             | 
                         a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
+
+                        if userFavorites.includes(tour._id.toString())
+                            button.favorite-btn(data-tour-id=tour._id, class="active")
+                                svg.favorite-icon
+                                    use(xlink:href='/img/icons.svg#icon-heart')
+                        else
+                            button.favorite-btn(data-tour-id=tour._id)
+                                svg.favorite-icon
+                                    use(xlink:href='/img/icons.svg#icon-heart')
+
