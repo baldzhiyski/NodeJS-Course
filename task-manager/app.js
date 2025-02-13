@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const compression = require("compression");
 const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
+const AppError = require("./utils/appError");
 
 // middleware
 app.use(express.json());
@@ -51,6 +52,9 @@ const limiter = rateLimit({
   message: "Too many requests from this IP , please try again in an hour !",
 });
 
+app.all("*", (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on the server !`, 404));
+});
 app.use("/api", limiter);
 app.use(errorController);
 module.exports = app;
