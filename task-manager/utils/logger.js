@@ -25,6 +25,10 @@ const logger = createLogger({
         })
       ),
     }),
+    new transports.File({
+      filename: path.join(logDir, "errors.log"),
+      level: "error",
+    }),
   ],
 });
 
