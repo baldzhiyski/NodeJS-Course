@@ -32,7 +32,6 @@ const taskSchema = new mongoose.Schema({
       },
       message: "Due date must be in the future",
     },
-    required: true,
   },
   //   assignedTo: {
   //     type: mongoose.Schema.Types.ObjectId,
