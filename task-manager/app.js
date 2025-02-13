@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const taskRouter = require("./routes/taskRoutes");
 const errorController = require("./controllers/errorController");
@@ -13,6 +14,8 @@ const rateLimit = require("express-rate-limit");
 app.use(express.json());
 
 const baseUrl = "/api/v1";
+// Static file middleware
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(`${baseUrl}/tasks`, taskRouter);
 

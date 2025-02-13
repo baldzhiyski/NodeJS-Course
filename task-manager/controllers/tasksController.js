@@ -10,17 +10,17 @@ exports.getAllTasks = catchAsyncError(async (req, res, next) => {
     .limitFields()
     .paginate()
     .sort();
-  const data = await features.query;
+  const tasks = await features.query;
 
   res.status(200).json({
     status: "success",
     message: "All tours",
-    data: data,
+    data: tasks,
   });
 });
 
 exports.getSingleTask = catchAsyncError(async (req, res, next) => {
-  const task = await Task.find({ _id: req.params.id });
+  const task = await Task.findById(req.params.id);
 
   if (!task) {
     return next(
@@ -38,19 +38,19 @@ exports.getSingleTask = catchAsyncError(async (req, res, next) => {
 exports.updateTask = catchAsyncError(async (req, res, next) => {
   req.body.updatedAt = Date.now();
 
-  const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
+  const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
 
-  if (!updated) {
+  if (!task) {
     return next(new AppError("No such task found in the db !", 404));
   }
 
   res.status(200).json({
     status: "success",
     message: "Task was updated successfully",
-    data: updated,
+    data: task,
   });
 });
 
