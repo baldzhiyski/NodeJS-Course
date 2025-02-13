@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const taskRouter = require("./routes/taskRoutes");
-
+const errorController = require("./controllers/errorController");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
@@ -50,4 +50,5 @@ const limiter = rateLimit({
 
 app.use("/api", limiter);
 
+app.use(errorController);
 module.exports = app;

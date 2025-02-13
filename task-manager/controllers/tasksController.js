@@ -1,7 +1,9 @@
 const Task = require("../models/taskModel");
 const APIFeatures = require("../utils/apiFeatures");
+const AppError = require("../utils/appError");
+const catchAsyncError = require("../utils/catchAsyncError");
 
-exports.getAllTasks = async (req, res, next) => {
+exports.getAllTasks = catchAsyncError(async (req, res, next) => {
   const features = new APIFeatures(Task.find(), req.query)
     .filter()
     .limitFields()
@@ -14,33 +16,43 @@ exports.getAllTasks = async (req, res, next) => {
     message: "All tours",
     data,
   });
-};
+});
 
-exports.getSingleTask = async (req, res, next) => {
+exports.getSingleTask = catchAsyncError(async (req, res, next) => {
   res.send("Success");
-};
+});
 
-exports.updateTask = async (req, res, next) => {
+exports.updateTask = catchAsyncError(async (req, res, next) => {
   req.body.updatedAt = Date.now();
-  const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  try {
+    const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
-  if (!updated) {
-  }
+    if (!updated) {
+      return next(new AppError("No such task found in the db !", 404));
+    }
+  } catch (error) {}
 
   res.staus(200).json({
     status: "success",
-    message: "Tour was updated successfully",
+    message: "Task was updated successfully",
     data: updated,
   });
-};
+});
 
-exports.createTask = async (req, res, next) => {
-  res.send("Success");
-};
+exports.createTask = catchAsyncError(async (req, res, next) => {
+  const taskToBeSaved = new Task(req.body);
 
-exports.deleteTask = async (req, res, next) => {
+  await taskToBeSaved.save();
+  res.status(201).json({
+    status: "success",
+    message: "Task was created successfully",
+    data: taskToBeSaved,
+  });
+});
+
+exports.deleteTask = catchAsyncError(async (req, res, next) => {
   res.send("Success");
-};
+});
