@@ -19,21 +19,32 @@ exports.getAllTasks = catchAsyncError(async (req, res, next) => {
 });
 
 exports.getSingleTask = catchAsyncError(async (req, res, next) => {
-  res.send("Success");
+  const task = Task.find({ _id: req.params.id });
+
+  if (!task) {
+    return next(
+      new AppError(`Task with id ${req.params.id} does not exists !`, 404)
+    );
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Get Specific Tourt",
+    data: task,
+  });
 });
 
 exports.updateTask = catchAsyncError(async (req, res, next) => {
   req.body.updatedAt = Date.now();
-  try {
-    const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
 
-    if (!updated) {
-      return next(new AppError("No such task found in the db !", 404));
-    }
-  } catch (error) {}
+  const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updated) {
+    return next(new AppError("No such task found in the db !", 404));
+  }
 
   res.staus(200).json({
     status: "success",
@@ -48,11 +59,23 @@ exports.createTask = catchAsyncError(async (req, res, next) => {
   await taskToBeSaved.save();
   res.status(201).json({
     status: "success",
-    message: "Task was created successfully",
+    message: "Task was created successfully!",
     data: taskToBeSaved,
   });
 });
 
 exports.deleteTask = catchAsyncError(async (req, res, next) => {
-  res.send("Success");
+  const task = Task.findByIdAndDelete(req.params.id);
+
+  if (!task) {
+    return next(
+      new AppError(`Task with id ${req.params.id} does not exists !`, 404)
+    );
+  }
+
+  res.staus(204).json({
+    status: "success",
+    message: "Task was deleted successfully!",
+    data: updated,
+  });
 });

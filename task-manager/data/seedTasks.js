@@ -6,7 +6,6 @@ const Task = require("../models/taskModel"); // Ensure correct path
 
 // Read tasks from JSON file
 const tasksFilePath = path.join(__dirname, "tasks.json");
-console.log(tasksFilePath);
 const tasksData = () => {
   try {
     const tasks = fs.readFileSync(tasksFilePath, "utf-8");

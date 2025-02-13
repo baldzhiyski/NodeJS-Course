@@ -12,3 +12,5 @@
 {"level":"error","message":"UNHANDLED REJECTION! 💥 Shutting down...","timestamp":"2025-02-13 08:56:34"}
 {"level":"error","message":"ValidationError","timestamp":"2025-02-13 08:56:34"}
 {"level":"error","message":"UNHANDLED REJECTION! 💥 Shutting down...","timestamp":"2025-02-13 08:59:52"}
+{"level":"error","message":"Error seeding database: Operation `tasks.countDocuments()` buffering timed out after 10000ms","stack":"MongooseError: Operation `tasks.countDocuments()` buffering timed out after 10000ms\n    at Timeout.<anonymous> (C:\\GitHub\\NodeJS-Course\\task-manager\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:185:23)\n    at listOnTimeout (node:internal/timers:573:17)\n    at process.processTimers (node:internal/timers:514:7)","timestamp":"2025-02-13 09:04:53"}
+{"level":"error","message":"UNHANDLED REJECTION! 💥 Shutting down...","timestamp":"2025-02-13 09:05:31"}

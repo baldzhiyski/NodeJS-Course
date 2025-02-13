@@ -32,6 +32,7 @@ const taskSchema = new mongoose.Schema({
       },
       message: "Due date must be in the future",
     },
+    required: true,
   },
   //   assignedTo: {
   //     type: mongoose.Schema.Types.ObjectId,
@@ -50,6 +51,10 @@ const taskSchema = new mongoose.Schema({
       trim: true,
     },
   ],
+});
+
+taskSchema.pre(/^find/, function (next) {
+  this.select(" -__v  -createdAt ");
 });
 
 const Task = mongoose.model("Task", taskSchema);
