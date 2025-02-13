@@ -30,7 +30,7 @@ exports.updateTask = async (req, res, next) => {
   if (!updated) {
   }
 
-  res.json({
+  res.staus(200).json({
     status: "success",
     message: "Tour was updated successfully",
     data: updated,

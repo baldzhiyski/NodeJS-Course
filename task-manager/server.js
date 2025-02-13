@@ -2,6 +2,7 @@ const app = require("./app");
 const dotenv = require("dotenv");
 const logger = require("./utils/logger");
 const mongoose = require("mongoose");
+const { seedDB } = require("./data/seedTasks");
 
 dotenv.config({ path: "./.env" });
 
@@ -18,6 +19,9 @@ const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
   logger.info(`App running on port ${port}...`);
 });
+
+// Run seeding function
+seedDB();
 
 process.on("uncaughtException", (err) => {
   logger.error("UNCAUGHT EXCEPTION! 💥 Shutting down...");

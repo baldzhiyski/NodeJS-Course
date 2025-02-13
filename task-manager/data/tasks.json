@@ -1,0 +1,48 @@
+[
+    {
+      "title": "Complete project documentation",
+      "description": "Write detailed documentation for the backend API.",
+      "priority": "high",
+      "status": "pending",
+      "dueDate": "2025-03-01T00:00:00Z",
+      "createdAt": "2025-02-10T12:00:00Z",
+      "tags": ["documentation", "backend", "high-priority"]
+    },
+    {
+      "title": "Fix authentication bug",
+      "description": "Debug and resolve the login issue in the user service.",
+      "priority": "medium",
+      "status": "in-progress",
+      "dueDate": "2025-02-25T00:00:00Z",
+      "createdAt": "2025-02-10T12:30:00Z",
+      "tags": ["authentication", "bug-fix", "medium-priority"]
+    },
+    {
+      "title": "Design UI for dashboard",
+      "description": "Create a modern UI layout for the admin panel.",
+      "priority": "high",
+      "status": "in-progress",
+      "dueDate": "2025-03-05T00:00:00Z",
+      "createdAt": "2025-02-10T13:00:00Z",
+      "tags": ["UI", "dashboard", "design", "high-priority"]
+    },
+    {
+      "title": "Optimize database queries",
+      "description": "Improve query performance for user data retrieval.",
+      "priority": "low",
+      "status": "completed",
+      "dueDate": "2025-02-28T00:00:00Z",
+      "createdAt": "2025-02-09T14:00:00Z",
+      "tags": ["database", "optimization", "low-priority"]
+    },
+    {
+      "title": "Write unit tests",
+      "description": "Ensure all service methods are covered with tests.",
+      "priority": "medium",
+      "status": "pending",
+      "dueDate": "2025-03-15T00:00:00Z",
+      "createdAt": "2025-02-10T15:00:00Z",
+      "tags": ["testing", "unit-tests", "medium-priority"]
+    }
+  ]
+  
