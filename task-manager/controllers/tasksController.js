@@ -1,3 +1,5 @@
+const Task = require("../models/taskModel");
+
 exports.getAllTasks = async (req, res, next) => {
   res.send("Success");
 };
