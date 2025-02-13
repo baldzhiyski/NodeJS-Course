@@ -1,7 +1,19 @@
 const Task = require("../models/taskModel");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.getAllTasks = async (req, res, next) => {
-  res.send("Success");
+  const features = new APIFeatures(Task.find(), req.query)
+    .filter()
+    .limitFields()
+    .paginate()
+    .sort();
+  const data = await features.query;
+
+  res.status(200).json({
+    status: "success",
+    message: "All tours",
+    data,
+  });
 };
 
 exports.getSingleTask = async (req, res, next) => {
@@ -9,7 +21,20 @@ exports.getSingleTask = async (req, res, next) => {
 };
 
 exports.updateTask = async (req, res, next) => {
-  res.send("Success");
+  req.body.updatedAt = Date.now();
+  const updated = await Task.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updated) {
+  }
+
+  res.json({
+    status: "success",
+    message: "Tour was updated successfully",
+    data: updated,
+  });
 };
 
 exports.createTask = async (req, res, next) => {
