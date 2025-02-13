@@ -55,6 +55,7 @@ const taskSchema = new mongoose.Schema({
 
 taskSchema.pre(/^find/, function (next) {
   this.select(" -__v  -createdAt ");
+  next();
 });
 
 const Task = mongoose.model("Task", taskSchema);

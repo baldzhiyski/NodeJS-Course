@@ -5,6 +5,7 @@ const catchAsyncError = require("../utils/catchAsyncError");
 
 exports.getAllTasks = catchAsyncError(async (req, res, next) => {
   const features = new APIFeatures(Task.find(), req.query)
+
     .filter()
     .limitFields()
     .paginate()
@@ -14,12 +15,12 @@ exports.getAllTasks = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "All tours",
-    data,
+    data: data,
   });
 });
 
 exports.getSingleTask = catchAsyncError(async (req, res, next) => {
-  const task = Task.find({ _id: req.params.id });
+  const task = await Task.find({ _id: req.params.id });
 
   if (!task) {
     return next(
@@ -46,7 +47,7 @@ exports.updateTask = catchAsyncError(async (req, res, next) => {
     return next(new AppError("No such task found in the db !", 404));
   }
 
-  res.staus(200).json({
+  res.status(200).json({
     status: "success",
     message: "Task was updated successfully",
     data: updated,
@@ -65,7 +66,7 @@ exports.createTask = catchAsyncError(async (req, res, next) => {
 });
 
 exports.deleteTask = catchAsyncError(async (req, res, next) => {
-  const task = Task.findByIdAndDelete(req.params.id);
+  const task = await Task.findByIdAndDelete(req.params.id);
 
   if (!task) {
     return next(
@@ -73,9 +74,9 @@ exports.deleteTask = catchAsyncError(async (req, res, next) => {
     );
   }
 
-  res.staus(204).json({
+  res.status(204).json({
     status: "success",
     message: "Task was deleted successfully!",
-    data: updated,
+    data: task,
   });
 });

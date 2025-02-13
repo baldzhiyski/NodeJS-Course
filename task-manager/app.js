@@ -49,6 +49,5 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
-
 app.use(errorController);
 module.exports = app;
